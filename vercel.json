@@ -1,12 +1,6 @@
 {
-  "version": 2,
-  "builds": [
-    { "src": "api/mcp.js", "use": "@vercel/node" },
-    { "src": "public/**", "use": "@vercel/static" }
-  ],
-  "routes": [
-    { "src": "/sse", "dest": "/api/mcp.js" },
-    { "src": "/messages(.*)", "dest": "/api/mcp.js" },
-    { "src": "/(.*)", "dest": "/public/$1" }
+  "rewrites": [
+    { "source": "/sse", "destination": "/api/mcp" },
+    { "source": "/messages", "destination": "/api/mcp" }
   ]
 }
