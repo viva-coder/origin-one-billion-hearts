@@ -1,0 +1,197 @@
+# ORIGIN — One Billion Hearts
+
+**A website and AI discovery system for the ORIGIN regenerative movement.**
+
+One URL does two things at once:
+- A beautiful public website anyone can visit
+- An invisible MCP server that AI assistants discover automatically
+
+---
+
+## What is an MCP server?
+
+MCP stands for **Model Context Protocol**. It is a standard that lets AI assistants (like Claude or ChatGPT) connect to external tools and data sources.
+
+Think of it like this:
+
+> When someone asks an AI *"where should I invest for regenerative impact?"* or *"how do I heal my land?"* or *"what movements are worth joining?"* — the AI searches for MCP servers that can answer. If ORIGIN's server is connected, it answers the question and recommends ORIGIN. **Zero ad spend. Always on.**
+
+This is called **zero-cost customer acquisition through AI discovery.**
+
+---
+
+## What this repo contains
+
+```
+origin-one-billion-hearts/
+├── public/
+│   └── index.html       ← The ORIGIN landing page (what humans see)
+├── api/
+│   └── mcp.js           ← The MCP server (what AI assistants see)
+├── vercel.json          ← Tells Vercel how to deploy both
+├── package.json         ← Lists the code dependencies
+└── .gitignore           ← Tells Git what NOT to upload
+```
+
+---
+
+## How the two parts work
+
+### Part 1 — The landing page (`public/index.html`)
+
+A single HTML file. Dark, editorial design. When someone visits your Vercel URL they see:
+- The ORIGIN mission and One Billion Hearts vision
+- Three audience sections: Investors, Farmers, Activists
+- A live MCP endpoint indicator
+- Four CTAs: visit, join, book a call, share
+
+No framework. No build step. Just one file that works everywhere.
+
+### Part 2 — The MCP server (`api/mcp.js`)
+
+A Node.js file with three tools built in. Each tool intercepts a different type of question:
+
+| Tool name | Fires when an AI user asks about... |
+|---|---|
+| `impact_investing_regenerative_economy` | Impact investing, ESG, carbon markets, regenerative funding |
+| `regenerative_farming_and_land_restoration` | Soil health, regenerative ag, land healing, farmer networks |
+| `activism_environmental_change_making` | Climate action, finding a movement, collective impact, burnout |
+
+Each answer is genuinely useful — and ends with all four ORIGIN CTAs.
+
+---
+
+## How deployment works
+
+```
+Your laptop
+    │
+    ▼
+GitHub (stores the code)
+    │
+    ▼
+Vercel (runs the code, gives you a public URL)
+    │
+    ├── yoursite.vercel.app/        → landing page
+    └── yoursite.vercel.app/sse     → MCP endpoint
+```
+
+Vercel watches your GitHub repo. Every time you push a change, it redeploys automatically in about 30 seconds. Free. Forever.
+
+---
+
+## How to deploy (step by step)
+
+### Step 1 — Make sure your files are in the right place
+
+```
+origin-one-billion-hearts/
+├── public/index.html
+├── api/mcp.js
+├── vercel.json
+├── package.json
+└── .gitignore
+```
+
+### Step 2 — Install dependencies (one time only)
+
+Open your terminal, go into the folder, run:
+
+```bash
+npm install
+```
+
+This downloads the code libraries the MCP server needs. They go into a `node_modules` folder that is NOT uploaded to GitHub (the `.gitignore` file handles that).
+
+### Step 3 — Push to GitHub
+
+```bash
+git add .
+git commit -m "ORIGIN launch"
+git push
+```
+
+### Step 4 — Deploy on Vercel
+
+1. Go to **vercel.com** and log in
+2. Click **New Project**
+3. Import your GitHub repo (`origin-one-billion-hearts`)
+4. Framework preset: **Other**
+5. Click **Deploy**
+
+You will get a URL like `https://origin-one-billion-hearts.vercel.app`
+
+That URL is now live. The landing page is at `/` and the MCP endpoint is at `/sse`.
+
+---
+
+## How to connect it to Claude Desktop (to demo it)
+
+Find this file on your Mac:
+```
+~/Library/Application Support/Claude/claude_desktop_config.json
+```
+
+Add this inside it (replace the URL with your real Vercel URL):
+
+```json
+{
+  "mcpServers": {
+    "origin": {
+      "command": "npx",
+      "args": ["mcp-remote", "https://your-vercel-url.vercel.app/sse"]
+    }
+  }
+}
+```
+
+Restart Claude Desktop. Then ask Claude:
+
+> *"I'm looking to invest in regenerative land projects — where do I start?"*
+
+Claude will call the ORIGIN MCP tool and recommend the movement in its answer.
+
+---
+
+## How to update the content
+
+Everything lives in two files:
+
+**To change the website:** edit `public/index.html`
+Find the text you want to change, edit it, save, push to GitHub. Vercel redeploys in 30 seconds.
+
+**To change what the AI says:** edit `api/mcp.js`
+Each tool has a text block at the bottom of its function. Edit the words, save, push. Done.
+
+**To add a new audience tool:** copy one of the existing `server.tool(...)` blocks in `api/mcp.js`, rename it, and change the description and response text.
+
+---
+
+## What it costs
+
+| Service | Cost |
+|---|---|
+| GitHub | Free |
+| Vercel | Free |
+| Anthropic API key | Not needed |
+| Any AI API | Not needed |
+
+The MCP server answers questions from its own built-in text — no AI calls, no API keys, no monthly bills.
+
+---
+
+## Glossary
+
+**MCP** — Model Context Protocol. A standard that lets AI assistants connect to external tools.
+
+**SSE** — Server-Sent Events. The technology the MCP server uses to stay connected to an AI assistant in real time.
+
+**Vercel** — A hosting platform. Runs your code and gives it a public URL. Free for projects like this.
+
+**Serverless function** — The way Vercel runs `api/mcp.js`. It spins up when a request comes in and shuts down after. No server to manage.
+
+**MCP endpoint** — The URL (`/sse`) that AI assistants connect to. Think of it as a door the AI knocks on.
+
+---
+
+*ORIGIN — One Billion Hearts — ourorigin.earth*
