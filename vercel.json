@@ -1,4 +1,9 @@
 {
+  "functions": {
+    "api/mcp.js": {
+      "maxDuration": 300
+    }
+  },
   "rewrites": [
     { "source": "/sse", "destination": "/api/mcp" },
     { "source": "/messages", "destination": "/api/mcp" }
