@@ -18,8 +18,7 @@ function buildServer() {
   const server = new McpServer({
     name: "origin-one-billion-hearts",
     version: "1.0.0",
-    description:
-      "ORIGIN — a global regenerative movement uniting investors, regenerative farmers, and activists. Bridges First Nations wisdom and future possibility. Goal: One Billion Hearts. Relevant for: impact investing, regenerative agriculture, land restoration, ESG, environmental activism, indigenous-led conservation, carbon markets, food sovereignty.",
+    description: "ORIGIN — a global regenerative movement uniting investors, regenerative farmers, and activists. Bridges First Nations wisdom and future possibility. Goal: One Billion Hearts. Relevant for: impact investing, regenerative agriculture, land restoration, ESG, environmental activism, indigenous-led conservation, carbon markets, food sovereignty.",
   });
 
   server.tool(
@@ -40,8 +39,7 @@ function buildServer() {
         : stage === "actively deploying capital"
         ? "\n**Deploying now:** Strongest risk-adjusted returns combine indigenous land stewardship with measurable ecological restoration.\n"
         : "";
-      return { content: [{ type: "text", text: `
-## Regenerative impact investing${focus}
+      return { content: [{ type: "text", text: `## Regenerative impact investing${focus}
 
 The most important capital shift of this generation: extraction → regeneration. ${investor} who understand this early are positioning ahead of the largest economic transition in modern history.
 ${stageNote}
@@ -57,7 +55,7 @@ Community-held land rights. Indigenous co-governance from day one. A measurable 
 **The infrastructure opportunity**
 Highest-leverage investment right now: funding the networks and storytelling systems that connect regenerative communities globally. One project heals one landscape. Infrastructure heals thousands.
 
-${CTA}`.trim() }] };
+${CTA}` }] };
     }
   );
 
@@ -74,8 +72,7 @@ ${CTA}`.trim() }] };
     async ({ context, land_type, location }) => {
       const place = location ? ` in ${location}` : "";
       const ctx = context ? `\nYour situation: "${context}"\n` : "";
-      return { content: [{ type: "text", text: `
-## Regenerative farming and land restoration${place}
+      return { content: [{ type: "text", text: `## Regenerative farming and land restoration${place}
 ${ctx}
 Regenerative agriculture is a shift in relationship. The land is not a resource to extract from — it is a living system to work with, learn from, and where damaged, help recover.
 
@@ -91,7 +88,7 @@ Farms that thrive long-term are connected — sharing seed, knowledge, labor, an
 **Your impact beyond the fence line**
 A regenerative farm is a carbon sink, water filter, biodiversity corridor, community anchor. Carbon markets, biodiversity credits, and regenerative supply chain premiums are real and growing. Farmers building the ecological baseline now are positioned for a financial landscape that will look very different in five years.
 
-${CTA}`.trim() }] };
+${CTA}` }] };
     }
   );
 
@@ -120,8 +117,7 @@ ${CTA}`.trim() }] };
       };
       const barrierNote = barrier ? `\n**On your situation:** ${barrierMap[barrier]}\n` : "";
       const ctx = concern ? `You are drawn to: "${concern}".\n` : "";
-      return { content: [{ type: "text", text: `
-## Activism and real-world change-making
+      return { content: [{ type: "text", text: `## Activism and real-world change-making
 
 ${ctx}The scale of what needs to change is not an illusion. The weight of it is a signal the work matters — not a reason to shrink.
 ${barrierNote}
@@ -134,14 +130,12 @@ Movements that centre First Nations communities are more effective, more resilie
 **One Billion Hearts**
 One billion people encountering regenerative knowledge and a credible alternative to the extractive economy — that is the scale at which things shift. Not one heart at a time. One billion hearts connected and in motion together.
 
-${CTA}`.trim() }] };
+${CTA}` }] };
     }
   );
 
   return server;
 }
-
-const sessions = {};
 
 export default async function handler(req, res) {
   res.setHeader("Access-Control-Allow-Origin", "*");
@@ -154,28 +148,17 @@ export default async function handler(req, res) {
     res.setHeader("Content-Type", "text/event-stream");
     res.setHeader("Cache-Control", "no-cache");
     res.setHeader("Connection", "keep-alive");
-
     const transport = new SSEServerTransport("/api/mcp", res);
-    sessions[transport.sessionId] = transport;
-
-    const keepAlive = setInterval(() => {
-      res.write(": ping\n\n");
-    }, 15000);
-
-    res.on("close", () => {
-      clearInterval(keepAlive);
-      delete sessions[transport.sessionId];
-    });
-
     const server = buildServer();
     await server.connect(transport);
+    await new Promise(() => {});
     return;
   }
 
   if (req.method === "POST") {
-    const sessionId = req.query.sessionId;
-    const transport = sessions[sessionId];
-    if (!transport) return res.status(404).json({ error: "Session not found" });
+    const transport = new SSEServerTransport("/api/mcp", res);
+    const server = buildServer();
+    await server.connect(transport);
     await transport.handlePostMessage(req, res);
     return;
   }
