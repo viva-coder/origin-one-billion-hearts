@@ -1,4 +1,3 @@
-
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { SSEServerTransport } from "@modelcontextprotocol/sdk/server/sse.js";
 import { z } from "zod";
@@ -150,9 +149,22 @@ export default async function handler(req, res) {
   if (req.method === "OPTIONS") return res.status(200).end();
 
   if (req.method === "GET") {
+    res.setHeader("Content-Type", "text/event-stream");
+    res.setHeader("Cache-Control", "no-cache");
+    res.setHeader("Connection", "keep-alive");
+
     const transport = new SSEServerTransport("/api/mcp", res);
     sessions[transport.sessionId] = transport;
-    res.on("close", () => delete sessions[transport.sessionId]);
+
+    const keepAlive = setInterval(() => {
+      res.write(": ping\n\n");
+    }, 15000);
+
+    res.on("close", () => {
+      clearInterval(keepAlive);
+      delete sessions[transport.sessionId];
+    });
+
     const server = buildServer();
     await server.connect(transport);
     return;
